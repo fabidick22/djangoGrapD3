@@ -1,0 +1,473 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+Instituciones
+{% endblock %}
+
+{% block moreCSS %}
+<link rel="stylesheet" href="{% static 'css/animationHeader.css' %}">
+{% endblock %}
+
+{% block header %}
+
+<div class="container2 demo">
+    <div class="content">
+        <div id="large-header" class="large-header">
+            <canvas id="demo-canvas"></canvas>
+            <h1 class="main-title"><span class="thin">Datos </span>Institución</h1>
+            <p class="main-content">Se ha logrado obtener datos por cada una de las instituciones que existen en el Ecuador</p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block contenidoMain %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-4">
+            <br>
+            <h4 class="section-header">Datos sobre los Sectores Encuestados</h4>
+            <p>Datos relacionados con los sectores publicos y privados, aun no dinamico</p>
+            <form class="form" method="post">{% csrf_token %}
+                <label for="exampleInputEmail1">Ingresar número</label>
+                <select class="form-control" id="sel1">
+                    {% for a in listSec %}
+                    <option>{{ a }}</option>
+                    {% endfor %}
+                </select>
+                <div class="modal-footer">
+                    <button class="btn btn-danger" type="reset">Cancelar</button>
+                    <button class="btn btn-success" type="submit">Enviar</button>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-8">
+            <div id="sankey_multiple" style="width: 300px; height: 300px;" class="char"></div>
+        </div>
+    </div>
+
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-8">
+                <script src="http://d3js.org/d3.v3.min.js"></script>
+            </div>
+            <div class="col-md-4">
+                <br>
+                <h4 class="section-header">Datos sobre los Sectores Encuestados</h4>
+                <p>Datos relacionados con los sectores publicos y privados, aun no dinamico</p>
+                <form class="form" method="post">{% csrf_token %}
+                    <label for="exampleInputEmail1">Ingresar número</label>
+                    {{ jsonD.sectores }}
+                    <div class="modal-footer">
+                        <button class="btn btn-danger" type="reset">Cancelar</button>
+                        <button class="btn btn-success" type="submit">Enviar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+<script>
+
+    //Practically all this code comes from https://github.com/alangrafu/radar-chart-d3
+//I only made some additions and aesthetic adjustments to make the chart look better
+//(of course, that is only my point of view)
+//Such as a better placement of the titles at each line end,
+//adding numbers that reflect what each circular level stands for
+//Not placing the last level and slight differences in color
+//
+//For a bit of extra information check the blog about it:
+//http://nbremer.blogspot.nl/2013/09/making-d3-radar-chart-look-bit-better.html
+
+var RadarChart = {
+  draw: function(id, d, options){
+  var cfg = {
+	 radius: 5,
+	 w: 600,
+	 h: 600,
+	 factor: 1,
+	 factorLegend: .85,
+	 levels: 3,
+	 maxValue: 0,
+	 radians: 2 * Math.PI,
+	 opacityArea: 0.5,
+	 ToRight: 5,
+	 TranslateX: 80,
+	 TranslateY: 30,
+	 ExtraWidthX: 100,
+	 ExtraWidthY: 100,
+	 color: d3.scale.category10()
+	};
+
+	if('undefined' !== typeof options){
+	  for(var i in options){
+		if('undefined' !== typeof options[i]){
+		  cfg[i] = options[i];
+		}
+	  }
+	}
+	cfg.maxValue = Math.max(cfg.maxValue, d3.max(d, function(i){return d3.max(i.map(function(o){return o.value;}))}));
+	var allAxis = (d[0].map(function(i, j){return i.axis}));
+	var total = allAxis.length;
+	var radius = cfg.factor*Math.min(cfg.w/2, cfg.h/2);
+	var Format = d3.format('%');
+	d3.select(id).select("svg").remove();
+
+	var g = d3.select(id)
+			.append("svg")
+			.attr("width", cfg.w+cfg.ExtraWidthX)
+			.attr("height", cfg.h+cfg.ExtraWidthY)
+			.append("g")
+			.attr("transform", "translate(" + cfg.TranslateX + "," + cfg.TranslateY + ")");
+			;
+
+	var tooltip;
+
+	//Circular segments
+	for(var j=0; j<cfg.levels-1; j++){
+	  var levelFactor = cfg.factor*radius*((j+1)/cfg.levels);
+	  g.selectAll(".levels")
+	   .data(allAxis)
+	   .enter()
+	   .append("svg:line")
+	   .attr("x1", function(d, i){return levelFactor*(1-cfg.factor*Math.sin(i*cfg.radians/total));})
+	   .attr("y1", function(d, i){return levelFactor*(1-cfg.factor*Math.cos(i*cfg.radians/total));})
+	   .attr("x2", function(d, i){return levelFactor*(1-cfg.factor*Math.sin((i+1)*cfg.radians/total));})
+	   .attr("y2", function(d, i){return levelFactor*(1-cfg.factor*Math.cos((i+1)*cfg.radians/total));})
+	   .attr("class", "line")
+	   .style("stroke", "grey")
+	   .style("stroke-opacity", "0.75")
+	   .style("stroke-width", "0.3px")
+	   .attr("transform", "translate(" + (cfg.w/2-levelFactor) + ", " + (cfg.h/2-levelFactor) + ")");
+	}
+
+	//Text indicating at what % each level is
+	for(var j=0; j<cfg.levels; j++){
+	  var levelFactor = cfg.factor*radius*((j+1)/cfg.levels);
+	  g.selectAll(".levels")
+	   .data([1]) //dummy data
+	   .enter()
+	   .append("svg:text")
+	   .attr("x", function(d){return levelFactor*(1-cfg.factor*Math.sin(0));})
+	   .attr("y", function(d){return levelFactor*(1-cfg.factor*Math.cos(0));})
+	   .attr("class", "legend")
+	   .style("font-family", "sans-serif")
+	   .style("font-size", "10px")
+	   .attr("transform", "translate(" + (cfg.w/2-levelFactor + cfg.ToRight) + ", " + (cfg.h/2-levelFactor) + ")")
+	   .attr("fill", "#737373")
+	   .text(Format((j+1)*cfg.maxValue/cfg.levels));
+	}
+
+	series = 0;
+
+	var axis = g.selectAll(".axis")
+			.data(allAxis)
+			.enter()
+			.append("g")
+			.attr("class", "axis");
+
+	axis.append("line")
+		.attr("x1", cfg.w/2)
+		.attr("y1", cfg.h/2)
+		.attr("x2", function(d, i){return cfg.w/2*(1-cfg.factor*Math.sin(i*cfg.radians/total));})
+		.attr("y2", function(d, i){return cfg.h/2*(1-cfg.factor*Math.cos(i*cfg.radians/total));})
+		.attr("class", "line")
+		.style("stroke", "grey")
+		.style("stroke-width", "1px");
+
+	axis.append("text")
+		.attr("class", "legend")
+		.text(function(d){return d})
+		.style("font-family", "sans-serif")
+		.style("font-size", "11px")
+		.attr("text-anchor", "middle")
+		.attr("dy", "1.5em")
+		.attr("transform", function(d, i){return "translate(0, -10)"})
+		.attr("x", function(d, i){return cfg.w/2*(1-cfg.factorLegend*Math.sin(i*cfg.radians/total))-60*Math.sin(i*cfg.radians/total);})
+		.attr("y", function(d, i){return cfg.h/2*(1-Math.cos(i*cfg.radians/total))-20*Math.cos(i*cfg.radians/total);});
+
+
+	d.forEach(function(y, x){
+	  dataValues = [];
+	  g.selectAll(".nodes")
+		.data(y, function(j, i){
+		  dataValues.push([
+			cfg.w/2*(1-(parseFloat(Math.max(j.value, 0))/cfg.maxValue)*cfg.factor*Math.sin(i*cfg.radians/total)),
+			cfg.h/2*(1-(parseFloat(Math.max(j.value, 0))/cfg.maxValue)*cfg.factor*Math.cos(i*cfg.radians/total))
+		  ]);
+		});
+	  dataValues.push(dataValues[0]);
+	  g.selectAll(".area")
+					 .data([dataValues])
+					 .enter()
+					 .append("polygon")
+					 .attr("class", "radar-chart-serie"+series)
+					 .style("stroke-width", "2px")
+					 .style("stroke", cfg.color(series))
+					 .attr("points",function(d) {
+						 var str="";
+						 for(var pti=0;pti<d.length;pti++){
+							 str=str+d[pti][0]+","+d[pti][1]+" ";
+						 }
+						 return str;
+					  })
+					 .style("fill", function(j, i){return cfg.color(series)})
+					 .style("fill-opacity", cfg.opacityArea)
+					 .on('mouseover', function (d){
+										z = "polygon."+d3.select(this).attr("class");
+										g.selectAll("polygon")
+										 .transition(200)
+										 .style("fill-opacity", 0.1);
+										g.selectAll(z)
+										 .transition(200)
+										 .style("fill-opacity", .7);
+									  })
+					 .on('mouseout', function(){
+										g.selectAll("polygon")
+										 .transition(200)
+										 .style("fill-opacity", cfg.opacityArea);
+					 });
+	  series++;
+	});
+	series=0;
+
+
+	d.forEach(function(y, x){
+	  g.selectAll(".nodes")
+		.data(y).enter()
+		.append("svg:circle")
+		.attr("class", "radar-chart-serie"+series)
+		.attr('r', cfg.radius)
+		.attr("alt", function(j){return Math.max(j.value, 0)})
+		.attr("cx", function(j, i){
+		  dataValues.push([
+			cfg.w/2*(1-(parseFloat(Math.max(j.value, 0))/cfg.maxValue)*cfg.factor*Math.sin(i*cfg.radians/total)),
+			cfg.h/2*(1-(parseFloat(Math.max(j.value, 0))/cfg.maxValue)*cfg.factor*Math.cos(i*cfg.radians/total))
+		]);
+		return cfg.w/2*(1-(Math.max(j.value, 0)/cfg.maxValue)*cfg.factor*Math.sin(i*cfg.radians/total));
+		})
+		.attr("cy", function(j, i){
+		  return cfg.h/2*(1-(Math.max(j.value, 0)/cfg.maxValue)*cfg.factor*Math.cos(i*cfg.radians/total));
+		})
+		.attr("data-id", function(j){return j.axis})
+		.style("fill", cfg.color(series)).style("fill-opacity", .9)
+		.on('mouseover', function (d){
+					newX =  parseFloat(d3.select(this).attr('cx')) - 10;
+					newY =  parseFloat(d3.select(this).attr('cy')) - 5;
+
+					tooltip
+						.attr('x', newX)
+						.attr('y', newY)
+						.text(Format(d.value))
+						.transition(200)
+						.style('opacity', 1);
+
+					z = "polygon."+d3.select(this).attr("class");
+					g.selectAll("polygon")
+						.transition(200)
+						.style("fill-opacity", 0.1);
+					g.selectAll(z)
+						.transition(200)
+						.style("fill-opacity", .7);
+				  })
+		.on('mouseout', function(){
+					tooltip
+						.transition(200)
+						.style('opacity', 0);
+					g.selectAll("polygon")
+						.transition(200)
+						.style("fill-opacity", cfg.opacityArea);
+				  })
+		.append("svg:title")
+		.text(function(j){return Math.max(j.value, 0)});
+
+	  series++;
+	});
+	//Tooltip
+	tooltip = g.append('text')
+			   .style('opacity', 0)
+			   .style('font-family', 'sans-serif')
+			   .style('font-size', '13px');
+  }
+};
+
+var w = 500,
+	h = 500;
+
+var colorscale = d3.scale.category10();
+
+//Legend titles
+var LegendOptions = ['Smartphone','Tablet'];
+var chartRows = ["sum_store_cost","sum_unit_sales"];
+var data = [{"customer_id":3,"sum_store_cost":37.845,"sum_unit_sales":50},{"customer_id":5,"sum_store_cost":0.5184,"sum_unit_sales":2},{"customer_id":6,"sum_store_cost":26.3617,"sum_unit_sales":22},{"customer_id":10,"sum_store_cost":22.8242,"sum_unit_sales":29},{"customer_id":14,"sum_store_cost":3.2294,"sum_unit_sales":9},{"customer_id":17,"sum_store_cost":20.4595,"sum_unit_sales":27},{"customer_id":19,"sum_store_cost":5.9382,"sum_unit_sales":8},{"customer_id":20,"sum_store_cost":23.3582,"sum_unit_sales":30},{"customer_id":21,"sum_store_cost":2.07,"sum_unit_sales":2},{"customer_id":23,"sum_store_cost":12.885,"sum_unit_sales":11},{"customer_id":26,"sum_store_cost":15.015,"sum_unit_sales":14},{"customer_id":28,"sum_store_cost":23.7893,"sum_unit_sales":27},{"customer_id":30,"sum_store_cost":43.0903,"sum_unit_sales":44},{"customer_id":36,"sum_store_cost":30.5174,"sum_unit_sales":41},{"customer_id":39,"sum_store_cost":95.7927,"sum_unit_sales":110},{"customer_id":40,"sum_store_cost":8.6556,"sum_unit_sales":11},{"customer_id":41,"sum_store_cost":39.2438,"sum_unit_sales":40},{"customer_id":43,"sum_store_cost":25.824,"sum_unit_sales":25},{"customer_id":44,"sum_store_cost":81.0936,"sum_unit_sales":97},{"customer_id":45,"sum_store_cost":33.2493,"sum_unit_sales":47}];
+
+var radardata = [];
+chartRows.forEach(function(value){
+  var singularity = [];
+  data.forEach(function(d){
+  	singularity.push({axis : d["customer_id"] , value: d[value]});
+	});
+  radardata.push(singularity);
+});
+
+//Options for the Radar chart, other than default
+var mycfg = {
+  w: w,
+  h: h,
+  maxValue: 0.6,
+  levels: 8,
+  ExtraWidthX: 300
+}
+
+//Call function to draw the Radar chart
+//Will expect that data is in %'s
+RadarChart.draw("body", radardata, mycfg);
+
+////////////////////////////////////////////
+/////////// Initiate legend ////////////////
+////////////////////////////////////////////
+
+var svg = d3.select('body')
+	.selectAll('svg')
+	.append('svg')
+	.attr("width", w+300)
+	.attr("height", h)
+
+//Create the title for the legend
+var text = svg.append("text")
+	.attr("class", "title")
+	.attr('transform', 'translate(90,0)')
+	.attr("x", w - 70)
+	.attr("y", 10)
+	.attr("font-size", "12px")
+	.attr("fill", "#404040")
+	.text("chart title");
+
+//Initiate Legend
+var legend = svg.append("g")
+	.attr("class", "legend")
+	.attr("height", 100)
+	.attr("width", 200)
+	.attr('transform', 'translate(90,20)')
+	;
+	//Create colour squares
+	legend.selectAll('rect')
+	  .data(LegendOptions)
+	  .enter()
+	  .append("rect")
+	  .attr("x", w - 65)
+	  .attr("y", function(d, i){ return i * 20;})
+	  .attr("width", 10)
+	  .attr("height", 10)
+	  .style("fill", function(d, i){ return colorscale(i);})
+	  ;
+	//Create text next to squares
+	legend.selectAll('text')
+	  .data(LegendOptions)
+	  .enter()
+	  .append("text")
+	  .attr("x", w - 52)
+	  .attr("y", function(d, i){ return i * 20 + 9;})
+	  .attr("font-size", "11px")
+	  .attr("fill", "#737373")
+	  .text(function(d) { return d; })
+	  ;
+
+
+
+
+
+
+</script>
+
+
+<script type="text/javascript">
+  google.charts.load("current", {packages:["sankey"]});
+  google.charts.setOnLoadCallback(drawChart);
+   function drawChart() {
+    var data = new google.visualization.DataTable();
+    data.addColumn('string', 'From');
+    data.addColumn('string', 'To');
+    data.addColumn('number', 'Weight');
+    data.addRows([
+       [ 'Brazil', 'Portugal', 5 ],
+       [ 'Brazil', 'France', 1 ],
+       [ 'Brazil', 'Spain', 1 ],
+       [ 'Brazil', 'England', 1 ],
+       [ 'Canada', 'Portugal', 1 ],
+       [ 'Canada', 'France', 5 ],
+       [ 'Canada', 'England', 1 ],
+       [ 'Mexico', 'Portugal', 1 ],
+       [ 'Mexico', 'France', 1 ],
+       [ 'Mexico', 'Spain', 5 ],
+       [ 'Mexico', 'England', 1 ],
+       [ 'USA', 'Portugal', 1 ],
+       [ 'USA', 'France', 1 ],
+       [ 'USA', 'Spain', 1 ],
+       [ 'USA', 'England', 5 ],
+       [ 'Portugal', 'Angola', 2 ],
+       [ 'Portugal', 'Senegal', 1 ],
+       [ 'Portugal', 'Morocco', 1 ],
+       [ 'Portugal', 'South Africa', 3 ],
+       [ 'France', 'Angola', 1 ],
+       [ 'France', 'Senegal', 3 ],
+       [ 'France', 'Mali', 3 ],
+       [ 'France', 'Morocco', 3 ],
+       [ 'France', 'South Africa', 1 ],
+       [ 'Spain', 'Senegal', 1 ],
+       [ 'Spain', 'Morocco', 3 ],
+       [ 'Spain', 'South Africa', 1 ],
+       [ 'England', 'Angola', 1 ],
+       [ 'England', 'Senegal', 1 ],
+       [ 'England', 'Morocco', 2 ],
+       [ 'England', 'South Africa', 7 ],
+       [ 'South Africa', 'China', 5 ],
+       [ 'South Africa', 'India', 1 ],
+       [ 'South Africa', 'Japan', 3 ],
+       [ 'Angola', 'China', 5 ],
+       [ 'Angola', 'India', 1 ],
+       [ 'Angola', 'Japan', 3 ],
+       [ 'Senegal', 'China', 5 ],
+       [ 'Senegal', 'India', 1 ],
+       [ 'Senegal', 'Japan', 3 ],
+       [ 'Mali', 'China', 5 ],
+       [ 'Mali', 'India', 1 ],
+       [ 'Mali', 'Japan', 3 ],
+       [ 'Morocco', 'China', 5 ],
+       [ 'Morocco', 'India', 1 ],
+       [ 'Morocco', 'Japan', 3 ]
+    ]);
+
+    // Set chart options
+    var options = {
+      width: 600,
+    };
+
+    // Instantiate and draw our chart, passing in some options.
+    var chart = new google.visualization.Sankey(document.getElementById('sankey_multiple'));
+    chart.draw(data, options);
+   }
+
+
+
+
+
+</script>
+
+
+{% endblock %}
+
+{% block moreJS %}
+<script src='https://s3-us-west-2.amazonaws.com/s.cdpn.io/499416/TweenLite.min.js'></script>
+<script src='https://s3-us-west-2.amazonaws.com/s.cdpn.io/499416/EasePack.min.js'></script>
+<script src='https://s3-us-west-2.amazonaws.com/s.cdpn.io/499416/demo.js'></script>
+<script src="{% static 'js/animation.js' %}"></script>
+
+{% endblock %}

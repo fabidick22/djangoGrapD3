@@ -1,0 +1,555 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+CORPE
+{% endblock title %}
+
+{% block moreCSS %}
+<link rel="stylesheet" href="{% static 'css/animations.css' %}">
+<link rel="stylesheet" href="{% static 'css/main.css' %}">
+<link rel="stylesheet" href="{% static 'ammap/ammap.css'%}" type="text/css">
+
+{% endblock %}
+{% block header %}
+
+<!-- Full Page Image Background Carousel Header -->
+<header id="myCarousel" class="carousel slide">
+    <!-- Indicators -->
+    <ol class="carousel-indicators">
+        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+        <li data-target="#myCarousel" data-slide-to="1"></li>
+        <li data-target="#myCarousel" data-slide-to="2"></li>
+        <li data-target="#myCarousel" data-slide-to="3"></li>
+    </ol>
+
+    <!-- Wrapper for Slides -->
+    <div class="carousel-inner">
+        <div class="item active">
+            <!-- Set the first background image using inline CSS below. -->
+            <div class="fill" style="background-image:url('{% static 'img/slider/1.jpg' %}');"></div>
+            <div class="carousel-caption">
+                <div class="contenedorTexto">
+                    <h2>CORPE</h2>
+                    <p>Control de Residuos Peligrosos.</p>
+                </div>
+            </div>
+        </div>
+        <div class="item">
+            <!-- Set the second background image using inline CSS below. -->
+            <div class="fill" style="background-image:url('{% static 'img/slider/2.jpg' %}');"></div>
+            <div class="carousel-caption">
+                <div class="contenedorTexto">
+                    <h2>UNIVERSIDAD TECNICA PARTICULAR DE LOJA</h2>
+                    <p>Gestio productiva 3.1 desarrollada por estudiantes de la UTPL.</p>
+                </div>
+            </div>
+        </div>
+        <div class="item">
+            <!-- Set the third background image using inline CSS below. -->
+            <div class="fill" style="background-image:url('{% static 'img/slider/3.JPG' %}');"></div>
+            <div class="carousel-caption">
+                <div class="contenedorTexto">
+                    <h2>UNIVERSIDAD TECNICA PARTICULAR DE LOJA</h2>
+                    <p>Gestio productiva 3.1 desarrollada por estudiantes de la UTPL.</p>
+                </div>
+            </div>
+        </div>
+        <div class="item">
+            <!-- Set the third background image using inline CSS below. -->
+            <div class="fill" style="background-image:url('{% static 'img/slider/4.jpg' %}');"></div>
+            <div class="carousel-caption">
+                <div class="contenedorTexto">
+                    <h2>UNIVERSIDAD TECNICA PARTICULAR DE LOJA</h2>
+                    <p>Gestio productiva 3.1 desarrollada por estudiantes de la UTPL.</p>
+                </div>
+            </div>
+        </div>
+        <div class="item">
+            <!-- Set the third background image using inline CSS below. -->
+            <div class="fill" style="background-image:url('{% static 'img/slider/2.jpg' %}');"></div>
+            <div class="carousel-caption">
+                <div class="contenedorTexto">
+                    <h2>UNIVERSIDAD TECNICA PARTICULAR DE LOJA</h2>
+                    <p>Gestio productiva 3.1 desarrollada por estudiantes de la UTPL.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Controls -->
+    <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+        <span class="icon-prev"></span>
+    </a>
+    <a class="right carousel-control" href="#myCarousel" data-slide="next">
+        <span class="icon-next"></span>
+    </a>
+
+</header>
+{% endblock %}
+
+{% block contenidoMain %}
+
+<!-- spacer section:testimonial -->
+<section id="testimonials" class="section" data-stellar-background-ratio="0.5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="align-center">
+                    <div class="testimonial pad-top40 pad-bot40 clearfix">
+                        <h2 class="section-heding">CORPE</h2>
+                        <h3>“Sabemos que protegiendo nuestros océanos protegeremos nuestro futuro”. Bill Clinto</h3>
+                        <h5>Este proyecto es realizado por estudiantes de la carrera de Sistemas Informaticos y de
+                            Computación, para la asignatura
+                            de Gestion Productiva 3.1, con la finalidad de demostrar las habilidades obtenidas de la
+                            asignatura.
+                            <br>
+                            La abreviatura CORPE hace referencia a Control de Residuos Peligrosos, una base de datos
+                            obtenida de
+                            <a href="http://www.ecuadorencifras.gob.ec/establecimientos-de-salud/">INEC</a> la cual se
+                            la normalizó y procesos para posteriormente obtener datos de interes para la sociedad.
+                        </h5>
+                        <br/>
+                        <span class="author">&mdash; Universidad: <a href="#">www.utpl.edu.ec</a></span>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- services -->
+<section id="section-services" class="section pad-bot30 bg-blue">
+    <div class="container">
+
+        <div class="row mar-bot40">
+            <div class="section-header">
+                <h2 class="section-heading animated" data-animation="bounceInUp">Datos Obtenidos</h2>
+            </div>
+            <div class="col-sm-3 col-lg-3">
+                <div class="dash-unit">
+                    <dtitle id="titleG1">Sectores</dtitle>
+                    <hr>
+                    <div id="load"></div>
+                    <h2 id="numG1">%</h2>
+                </div>
+            </div>
+            <div class="col-sm-3 col-lg-3">
+                <div class="dash-unit">
+                    <dtitle id="titleG2">Sectores Privados S.F.L.</dtitle>
+                    <hr>
+                    <div id="space"></div>
+                    <h2 id="numG2">%</h2>
+                </div>
+            </div>
+            <div class="col-sm-3 col-lg-3">
+                <div class="dash-unit">
+                    <dtitle>Numero de Instituciones</dtitle>
+                    <hr>
+                    <div class="cont">
+                        <p>
+                            <bold>#{{ regiones.0.valor }}</bold>
+                            |
+                            <ok>{{ regiones.0.region }}</ok>
+                        </p>
+                        <br>
+                        <p>
+                            <bold>#{{ regiones.1.valor }}</bold>
+                            |
+                            <inter>{{ regiones.1.region }}</inter>
+                        </p>
+                        <br>
+                        <p>
+                            <bold>#{{ regiones.2.valor }}</bold>
+                            |
+                            <bad>{{ regiones.2.region }}</bad>
+                        </p>
+                        <br>
+                        <p>
+                            <bold>#{{ regiones.3.valor }}</bold>
+                            |
+                            <mediun>{{ regiones.3.region }}</mediun>
+                        </p>
+                        <br>
+                        {% comment %}<p><img src="images/up-small.png" alt=""> 12% Compared Last Month</p>
+                        {% endcomment %}
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-sm-3 col-lg-3">
+                <!-- TOTAL SUBSCRIBERS BLOCK -->
+                <div class="half-unit">
+                    <dtitle>Total de Instituciones</dtitle>
+                    <hr>
+                    <div class="cont">
+                        <p>
+                            <bold>{{ total }}</bold>
+                        </p>
+                        <p>{{ promedio }} Promedio por Provincia</p>
+                    </div>
+                </div>
+
+                <!-- FOLLOWERS BLOCK -->
+                <div class="half-unit">
+                    <dtitle>Total de Entidades</dtitle>
+                    <hr>
+                    <div class="cont">
+                        <p>
+                            <bold>{{ entidades }} Entidades</bold>
+                        </p>
+                        <p>del Ecuador</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- spacer section:stats -->
+<section id="parallax1" class="section pad-top40 pad-bot40" data-stellar-background-ratio="0.5">
+    <div class="container">
+        {% comment %}
+        <div class="align-center pad-top40 pad-bot40">{% endcomment %}
+            <div id="mapdiv" style="width: 100%; height: 600px;"></div>
+            {% comment %}
+        </div>
+        {% endcomment %}
+    </div>
+</section>
+
+<section id="parallax2" class="section parallax" data-stellar-background-ratio="0.5">
+    <div class="align-center pad-top40 pad-bot40 contenedorTexto">
+        <blockquote class="bigquote color-white">Por qué registrar los residuos peligrosos.</blockquote>
+        <p class="color-white1">Obtener estadisticas ambientales referentes a los residuos peligrosos hospitalarios, que
+            se generan en las instituciones de salud en el Ecuador.</p>
+        <p class="color-white1">Determinar la cantidad de residuos hospitalarios que produce cada institución de
+            salud.</p>
+    </div>
+</section>
+
+<!-- numero -->
+<section id="testimonials1" data-stellar-background-ratio="0.5">
+    <div id="about-bg">
+        <div class="container">
+            <div class="row">
+                <div class="about-bg-heading">
+                    <h2>Detalle de los residuos Peligrosos Recolectados </h2>
+                </div>
+
+                <div class=" col-xs-12 col-md-3">
+                    <div class="contenedorTexto about-bg-wrapper">
+                        <span class="count"><h1><span class=""> {{ resiList }}</h1></span>
+                        <p>Promedio Residuos infecciosos recolectados</p>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-md-3">
+                    <div class="contenedorTexto about-bg-wrapper">
+                        <span class="count"><h1>{{ cortopulzante }}</h1></span>
+                        <p>Promedio Residuos corto punzantes recolectados</p>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-md-3">
+                    <div class="contenedorTexto about-bg-wrapper">
+                        <span class="count"><h1>{{ especiales }}</h1></span>
+                        <p>Promedio Residuos Especiales recolectados</p>
+
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-md-3">
+                    <div class="contenedorTexto about-bg-wrapper">
+                        <span class="count"><h1>{{ incinerados }}</h1></span>
+                        <p>Promedio Residuos peligrosos incinerados</p>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="cover"></div>
+    </div>
+</section>
+
+<!-- about -->
+<section id="section-about" class="section appear clearfix">
+    <div class="container">
+
+        <div class="row mar-bot40">
+            <div class="col-md-offset-3 col-md-6">
+                <div class="section-header">
+                    <h2 class="section-heading animated" data-animation="bounceInUp">Desarrolladores</h2>
+                    <p>Los participantes para el desarrollo de esta aplicación.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row align-center mar-bot40">
+            <div class="col-md-6">
+                <div class="team-member">
+                    <figure class="member-photo"><img src="{% static 'img/team/jose.jpg' %}" alt=""/></figure>
+                    <div class="team-detail">
+                        <h4>Jose Bustillos</h4>
+                        <span>Web developer</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="team-member">
+                    <figure class="member-photo"><img src="{% static 'img/team/dickson.jpg' %}" alt=""/></figure>
+                    <div class="team-detail">
+                        <h4>Dickson Armijos</h4>
+                        <span>Web designer</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- map -->
+{% comment %}
+<section id="section-map" class="clearfix">
+    <div id="google-map" data-latitude="40.713732" data-longitude="-74.0092704"></div>
+</section>{% endcomment %}
+{% endblock %}
+
+{% block moreJS %}
+
+<script>
+            $('.carousel').carousel({
+                interval: 3000 //changes the speed
+            })
+
+
+
+
+
+</script>
+{% comment %}
+<script src='http://www.marcoguglie.it/Codepen/AnimatedHeaderBg/demo-1/js/EasePack.min.js'></script>
+<script src='http://www.marcoguglie.it/Codepen/AnimatedHeaderBg/demo-1/js/rAF.js'></script>
+<script src='http://www.marcoguglie.it/Codepen/AnimatedHeaderBg/demo-1/js/TweenLite.min.js'></script>
+<script src="{% static 'js/animation.js' %}"></script>{% endcomment %}
+<script src="{% static 'js/jquery.flexslider.js' %}"></script>
+<script src="{% static 'js/jquery.inview.js' %}"></script>
+<script src="{% static 'js/autoimcrement.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/dash-charts.js' %}"></script>
+<script>
+        $(document).ready(function() {
+		info = new Highcharts.Chart({
+			chart: {
+				renderTo: 'load',
+				margin: [0, 0, 0, 0],
+				backgroundColor: null,
+                plotBackgroundColor: 'none',
+
+			},
+
+			title: {
+				text: null
+			},
+
+			tooltip: {
+				formatter: function() {
+				    $("#titleG1").text(this.point.name )
+				    $("#numG1").text(this.y+"%")
+					return this.point.name +': '+ this.y +' %';
+
+				}
+
+			},
+		    series: [
+				{
+				borderWidth: 2,
+				borderColor: '#F1F3EB',
+				shadow: false,
+				type: 'pie',
+				name: 'Income',
+				innerSize: '65%',
+				data:{{ esta | safe }},
+				dataLabels: {
+					enabled: false,
+					color: '#000000',
+					connectorColor: '#000000'
+				}
+			}]
+		});
+	});
+
+/*** second Chart in Dashboard page ***/
+
+	$(document).ready(function() {
+		info = new Highcharts.Chart({
+			chart: {
+				renderTo: 'space',
+				margin: [0, 0, 0, 0],
+				backgroundColor: null,
+                plotBackgroundColor: 'none',
+
+			},
+
+			title: {
+				text: null
+			},
+
+			tooltip: {
+				formatter: function() {
+				    $("#titleG2").text(this.point.name )
+				    $("#numG2").text(this.y+"%")
+					return this.point.name +': '+ this.y +' %';
+
+				}
+			},
+		    series: [
+				{
+				borderWidth: 2,
+				borderColor: '#F1F3EB',
+				shadow: false,
+				type: 'pie',
+				name: 'SiteInfo',
+				innerSize: '65%',
+				data: {{ esta2 | safe }},
+				dataLabels: {
+					enabled: false,
+					color: '#000000',
+					connectorColor: '#000000'
+				}
+			}]
+		});
+
+	});
+
+
+
+
+</script>
+<script type="text/javascript" src="http://code.highcharts.com/highcharts.js"></script>
+<script src="{% static 'ammap/ammap.js'%}" type="text/javascript"></script>
+<script src="{% static 'ammap/maps/js/ecuadorLow.js'%}" type="text/javascript"></script>
+{% comment %}
+<script src="{% static 'ammap/maps/js/worldLow.js'%}" type="text/javascript"></script>{% endcomment %}
+<script src="{% static 'ammap/themes/patterns.js'%}" type="text/javascript"></script>
+
+<script>
+			/*
+			        		although ammap has methos like getAreaCenterLatitude and getAreaCenterLongitude,
+			        		they are not suitable in quite a lot of cases as the center of some countries
+			        		is even outside the country itself (like US, because of Alaska and Hawaii)
+			        		That's why wehave the coordinates stored here
+			        	*/
+            var latlong={};
+            {% for proheader in pro %}
+                latlong["{{ proheader.codprovincia }}"]={
+                    "latitude": {{proheader.latitudprovincia}},
+                    "longitude": {{proheader.longitudprovincia}}
+                };
+            {% endfor %}
+            {% if jsonD or pro%}
+                var mapData ={{ jsonD | safe}};
+                {% else %}
+                var mapData=[]
+            {% endif %}
+
+			var map;
+			var minBulletSize = 3;
+			var maxBulletSize = 70;
+			var min = Infinity;
+			var max = -Infinity;
+
+			AmCharts.theme = AmCharts.themes.patterns;
+
+			// get min and max values
+			for (var i = 0; i < mapData.length; i++) {
+				var value = mapData[i].value;
+				if (value < min) {
+					min = value;
+				}
+				if (value > max) {
+					max = value;
+				}
+			}
+
+			// build map
+			AmCharts.ready(function() {
+				map = new AmCharts.AmMap();
+				map.projection = "winkel3";
+
+				map.addTitle("Mapa de establecimientos encuestados", 15, "#ffffff");
+				map.addTitle("Origen: CORPE", 11, "#fafafa");
+				map.areasSettings = {
+					unlistedAreasColor: "#fafafa",
+					unlistedAreasAlpha: 0.2
+				};
+				map.imagesSettings = {
+					balloonText: "<span style='font-size:14px;'><b>[[title]]</b>: [[value]]</span><br><span style='font-size:12px;'>Establecimientos</b></span>",
+					alpha: 0.6
+				}
+
+				var dataProvider = {
+					mapVar: AmCharts.maps.ecuadorLow,
+					images: []
+				}
+				// create circle for each country
+				// it's better to use circle square to show difference between values, not a radius
+				var maxSquare = maxBulletSize * maxBulletSize * 2 * Math.PI;
+				var minSquare = minBulletSize * minBulletSize * 2 * Math.PI;
+				// create circle for each country
+				for (var i = 0; i < mapData.length; i++) {
+					var dataItem = mapData[i];
+					var value = dataItem.value;
+					var value2 = dataItem.value2;
+					// calculate size of a bubble
+					var square = (value - min) / (max - min) * (maxSquare - minSquare) + minSquare;
+					if (square < minSquare) {
+						square = minSquare;
+					}
+					var size = Math.sqrt(square / (Math.PI * 2));
+					var id = dataItem.code;
+					dataProvider.images.push({
+						type: "circle",
+						width: size,
+						height: size,
+						color: dataItem.color,
+						longitude: latlong[id].longitude,
+						latitude: latlong[id].latitude,
+						title: dataItem.name,
+						value: value,
+						description: value2,
+					});
+				}
+				map.dataProvider = dataProvider;
+
+				map.write("mapdiv");
+			});
+
+
+
+
+</script>
+<script>
+     $(".about-bg-heading").one("inview", function(event, visible) {
+        	if (visible == true) {
+    	    	$(".count").each(function() {
+    		    	$(this).prop("Counter", 0).animate({
+    			    	    Counter: $(this).text()
+    			    }, {
+	    	    		duration: 5000,
+	        			easing: "swing",
+    		    		step: function(now) {
+				    	    $(this).text(Math.ceil(now));
+	    			    }
+		    	    });
+	    	    });
+    	    }
+     });
+
+
+
+
+</script>
+{% endblock %}

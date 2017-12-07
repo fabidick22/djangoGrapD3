@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    Informativo
+{% endblock %}
+
+{% block moreCSS %}
+    <link rel="stylesheet" href="{% static 'css/animationHeader.css' %}">
+{% endblock %}
+
+{% block header %}
+
+    <div class="container2 demo">
+        <div class="content">
+            <div id="large-header" class="large-header">
+                <canvas id="demo-canvas"></canvas>
+                <h1 class="main-title"><span class="thin">Datos </span>Informativos</h1>
+                {% comment %}<h5 class="subTitle">Hola a todos como estan</h5>{% endcomment %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block contenidoMain %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-5" style="background-color: rgb(201, 201, 201);">
+                <br>
+                <h4 class="section-header modal-header">Datos sobre los Sectores Encuestados</h4>
+                <p>En el siguiente gráfico podemos visualizar tres puntos importantes por cada sector, el primero que es
+                    el numero de establecimientos por cada sector, si los residuos peligrosos son entregados de uso
+                    INEC y por ultimo tenemos si los residuos peligrosos son puestos bajos celdas, en la gráficas se
+                    visualiza los que si lo haces.</p>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="col-xs-4">
+                            <h7>Sector Publico <br>.</h7>
+                            <input type="text" class="form-control" placeholder="" style="background-color: #CC333F;"
+                                   title="Sector Publico">
+                        </div>
+                        <div class="col-xs-4">
+                            <h7>S. Privado Con Fines De Lucro</h7>
+                            <input type="text" class="form-control" placeholder="" style="background-color: #EDC951;"
+                                   title="Sector Privado Con Fines De Lucro">
+                        </div>
+                        <div class="col-xs-4">
+                            <h7>S. Privado Sin Fines De Lucro</h7>
+                            <input type="text" class="form-control" placeholder="" style="background-color: #00A0B0;"
+                                   title="Sector Privado Sin Fines De Lucro">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-7">
+                <div class="radarChart"></div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block moreJS %}
+    <script src='https://s3-us-west-2.amazonaws.com/s.cdpn.io/499416/TweenLite.min.js'></script>
+    <script src='https://s3-us-west-2.amazonaws.com/s.cdpn.io/499416/EasePack.min.js'></script>
+    <script src='https://s3-us-west-2.amazonaws.com/s.cdpn.io/499416/demo.js'></script>
+    <script src="{% static 'js/animation.js' %}"></script>
+    <script src="{% static 'js/d3/d3_3_5_6.js' %}"></script>
+    <script src="{% static 'js/radarChart.js' %}"></script>
+    <script>
+        //////////////////////////////////////////////////////////////
+        //////////////////////// Set-Up //////////////////////////////
+        //////////////////////////////////////////////////////////////
+
+        var margin = {top: 100, right: 100, bottom: 100, left: 100},
+                width = Math.min(700, window.innerWidth),
+                height = Math.min(width, window.innerHeight - margin.top - margin.bottom - 20);
+
+        //////////////////////////////////////////////////////////////
+        ////////////////////////// Data //////////////////////////////
+        //////////////////////////////////////////////////////////////
+        var data = {{ jsonD | safe }};
+        {% comment %}var data = [
+                  [//iPhone
+                    {axis:"Battery Life",value:0.22},
+                    {axis:"Brand",value:0.28},
+                    {axis:"Contract Cost",value:0.29},
+                    {axis:"Design And Quality",value:0.17},
+                    {axis:"Have Internet Connectivity",value:0.22},
+                    {axis:"Large Screen",value:0.02},
+                    {axis:"Price Of Device",value:0.21},
+                    {axis:"To Be A Smartphone",value:0.50}
+                  ],[//Samsung
+                    {axis:"Battery Life",value:0.27},
+                    {axis:"Brand",value:0.16},
+                    {axis:"Contract Cost",value:0.35},
+                    {axis:"Design And Quality",value:0.13},
+                    {axis:"Have Internet Connectivity",value:0.20},
+                    {axis:"Large Screen",value:0.13},
+                    {axis:"Price Of Device",value:0.35},
+                    {axis:"To Be A Smartphone",value:0.38}
+                  ],[//Nokia Smartphone
+                    {axis:"Battery Life",value:0.26},
+                    {axis:"Brand",value:0.10},
+                    {axis:"Contract Cost",value:0.30},
+                    {axis:"Design And Quality",value:0.14},
+                    {axis:"Have Internet Connectivity",value:0.22},
+                    {axis:"Large Screen",value:0.04},
+                    {axis:"Price Of Device",value:0.41},
+                    {axis:"To Be A Smartphone",value:0.30}
+                  ]
+                ];{% endcomment %}
+        //////////////////////////////////////////////////////////////
+        //////////////////// Draw the Chart //////////////////////////
+        //////////////////////////////////////////////////////////////
+
+        var color = d3.scale.ordinal()
+                .range(["#EDC951", "#CC333F", "#00A0B0"]);
+
+        var radarChartOptions = {
+            w: width,
+            h: height,
+            margin: margin,
+            maxValue: 0.5,
+            levels: 5,
+            roundStrokes: true,
+            color: color
+        };
+        //Call function to draw the Radar chart
+        RadarChart(".radarChart", data, radarChartOptions);
+    </script>
+{% endblock %}
+
